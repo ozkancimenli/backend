@@ -1,14 +1,15 @@
 from pathlib import Path
 from datetime import timedelta
 import os
+import dj_database_url
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # -----------------------------------------------------------------------------
 # SECURITY
 # -----------------------------------------------------------------------------
-SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'django-insecure-he-t&8x*omuxi_oj2z@az&+!pdz$ngg6l=2pjb-5ua$b2!jyu4')
-DEBUG = os.getenv('DEBUG', 'True') == 'True'
+SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
+DEBUG = os.getenv("DEBUG", "False").lower() == "true"
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '*').split(',')
 
 # -----------------------------------------------------------------------------
@@ -78,16 +79,15 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # If local dev → fallback to SQLite
 
 if os.getenv('POSTGRES_DB'):
+    
+   # 🗄️ DATABASE
     DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': os.getenv('POSTGRES_DB', 'tasktrackr'),
-            'USER': os.getenv('POSTGRES_USER', 'postgres'),
-            'PASSWORD': os.getenv('POSTGRES_PASSWORD', 'postgres'),
-            'HOST': os.getenv('POSTGRES_HOST', 'db'),
-            'PORT': os.getenv('POSTGRES_PORT', '5432'),
-        }
-    }
+    "default": dj_database_url.config(
+        default=os.getenv("DATABASE_URL"),
+        conn_max_age=600,  # bağlantı reuse için
+        ssl_require=True    # Render/Neon için güvenli bağlantı
+    )
+}
 else:
     DATABASES = {
         'default': {
