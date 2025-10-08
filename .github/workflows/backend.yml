@@ -28,7 +28,7 @@ jobs:
           python-version: "3.11"
 
       - name: Install dependencies
-        working-directory: ./ # 👈 BU SATIR HAYAT KURTARIR
+        working-directory: /home/runner/work/backend # 👈 BU SATIR HAYAT KURTARIR
         run: |
           python -m venv venv
           source venv/bin/activate
