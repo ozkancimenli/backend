@@ -5,20 +5,16 @@ on:
     branches:
       - main
 
-defaults:
-  run:
-    working-directory: ..
-
 jobs:
   test-and-deploy:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./  # 👈 repo kökü (requirements.txt burada)
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
-      - name: Move to correct directory
-        run: cd /home/runner/work/backend/
 
       - name: Set up Python
         uses: actions/setup-python@v5
