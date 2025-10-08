@@ -19,22 +19,25 @@ jobs:
           python-version: "3.11"
 
       - name: Debug — show directory contents
-        working-directory: backend
         run: |
-          echo "Current dir: $(pwd)"
+          echo "Repository root:"
+          pwd
           ls -la
+          echo ""
+          echo "Backend folder:"
+          ls -la backend/
 
       - name: Install dependencies
-        working-directory: backend
         run: |
+          cd backend
           python -m venv venv
           source venv/bin/activate
           pip install --upgrade pip
           pip install -r requirements.txt
 
       - name: Run Django tests
-        working-directory: backend
         run: |
+          cd backend
           source venv/bin/activate
           python manage.py test
 
