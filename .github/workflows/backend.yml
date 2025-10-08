@@ -28,7 +28,7 @@ jobs:
           python-version: "3.11"
 
       - name: Install dependencies
-        working-directory: ./backend  # 👈 BU SATIR HAYAT KURTARIR
+        working-directory: cd ..  # 👈 BU SATIR HAYAT KURTARIR
         run: |
           python -m venv venv
           source venv/bin/activate
@@ -36,7 +36,7 @@ jobs:
           pip install -r ../requirements.txt  # 👈 kökten alıyor
 
       - name: Run Django tests
-        working-directory: ./backend
+        working-directory: cd ..
         run: |
           source venv/bin/activate
           python ../manage.py test
