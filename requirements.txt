@@ -19,6 +19,7 @@ inflection==0.5.1
 
 # Database
 psycopg2-binary==2.9.10
+dj-database-url==2.1.0
 
 # JWT
 PyJWT==2.10.1
