@@ -9,16 +9,17 @@ jobs:
   test-and-deploy:
     runs-on: ubuntu-latest
 
+    defaults:
+      run:
+        working-directory: ./  # kök dizin (requirements.txt burada!)
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Move to correct directory
+      - name: Debug — show files
         run: |
-          cd ..
-          mv backend ../
-          cd ../backend
-          echo "Moved into $(pwd)"
+          pwd
           ls -la
 
       - name: Set up Python
@@ -27,16 +28,18 @@ jobs:
           python-version: "3.11"
 
       - name: Install dependencies
+        working-directory: /home/runner/work/ # 👈 BU SATIR HAYAT KURTARIR
         run: |
           python -m venv venv
           source venv/bin/activate
           pip install --upgrade pip
-          pip install -r requirements.txt
+          pip install -r ../requirements.txt  # 👈 kökten alıyor
 
       - name: Run Django tests
+        working-directory: /home/runner/work/
         run: |
           source venv/bin/activate
-          python manage.py test
+          python ../manage.py test
 
       - name: Deploy to Render
         if: success()
