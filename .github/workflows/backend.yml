@@ -9,11 +9,15 @@ jobs:
   test-and-deploy:
     runs-on: ubuntu-latest
 
+    defaults:
+      run:
+        working-directory: ./  # kök dizin (requirements.txt burada!)
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Show current path
+      - name: Debug — show files
         run: |
           pwd
           ls -la
@@ -24,18 +28,18 @@ jobs:
           python-version: "3.11"
 
       - name: Install dependencies
+        working-directory: ./backend  # 👈 BU SATIR HAYAT KURTARIR
         run: |
-          cd ..
           python -m venv venv
           source venv/bin/activate
           pip install --upgrade pip
-          pip install -r requirements.txt
+          pip install -r ../requirements.txt  # 👈 kökten alıyor
 
       - name: Run Django tests
+        working-directory: ./backend
         run: |
-          cd ..
           source venv/bin/activate
-          python manage.py test
+          python ../manage.py test
 
       - name: Deploy to Render
         if: success()
@@ -43,7 +47,6 @@ jobs:
           RENDER_SERVICE_ID: ${{ secrets.RENDER_SERVICE_ID }}
           RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
         run: |
-          cd ..
           curl -X POST "https://api.render.com/v1/services/${RENDER_SERVICE_ID}/deploys" \
             -H "Accept: application/json" \
             -H "Authorization: Bearer ${RENDER_API_KEY}" \
