@@ -1,16 +1,76 @@
 from pathlib import Path
 from datetime import timedelta
+from typing import Optional
 import os
 import dj_database_url
+from django.core.exceptions import ImproperlyConfigured
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# -----------------------------------------------------------------------------
+# Load environment variables from .env files (root and backend)
+# -----------------------------------------------------------------------------
+
+
+def load_env_file(path: Path, *, override: bool = False) -> None:
+    if not path.exists():
+        return
+    for raw_line in path.read_text().splitlines():
+        line = raw_line.strip()
+        if not line or line.startswith('#') or '=' not in line:
+            continue
+        key, value = line.split('=', 1)
+        key = key.strip()
+        value = value.strip().strip('"').strip("'")
+        if not key:
+            continue
+        if override or key not in os.environ:
+            os.environ[key] = value
+
+
+load_env_file(BASE_DIR.parent / '.env')
+load_env_file(BASE_DIR / '.env', override=True)
 
 # -----------------------------------------------------------------------------
 # SECURITY
 # -----------------------------------------------------------------------------
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
+if not SECRET_KEY:
+    raise ImproperlyConfigured("DJANGO_SECRET_KEY is not set. Add it to your environment or .env file.")
 DEBUG = os.getenv("DEBUG", "False").lower() == "true"
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '*').split(',')
+ALLOWED_HOSTS = [host.strip() for host in os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',') if host.strip()]
+
+render_host = os.getenv('RENDER_EXTERNAL_HOSTNAME')
+if render_host and render_host not in ALLOWED_HOSTS:
+    ALLOWED_HOSTS.append(render_host)
+
+CSRF_TRUSTED_ORIGINS = [
+    origin.strip() for origin in os.getenv('CSRF_TRUSTED_ORIGINS', '').split(',') if origin.strip()
+]
+if render_host:
+    CSRF_TRUSTED_ORIGINS.append(f"https://{render_host}")
+
+# -----------------------------------------------------------------------------
+# DATABASE HELPERS
+# -----------------------------------------------------------------------------
+USE_SQLITE = os.getenv('USE_SQLITE', 'False').lower() == 'true'
+
+
+def guess_database_url() -> Optional[str]:
+    url = os.getenv('DATABASE_URL')
+    if url:
+        return url
+
+    db_name = os.getenv('POSTGRES_DB')
+    user = os.getenv('POSTGRES_USER')
+    host = os.getenv('POSTGRES_HOST')
+    if not all([db_name, user, host]):
+        return None
+
+    port = os.getenv('POSTGRES_PORT', '5432')
+    password = os.getenv('POSTGRES_PASSWORD', '')
+    credentials = f"{user}:{password}" if password else user
+    return f"postgresql://{credentials}@{host}:{port}/{db_name}"
 
 # -----------------------------------------------------------------------------
 # APPLICATIONS
@@ -28,7 +88,6 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     'drf_yasg',
-    'django_extensions',
 
     # Local apps
     'users',
@@ -75,19 +134,18 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # -----------------------------------------------------------------------------
 # DATABASES
 # -----------------------------------------------------------------------------
-# If running inside Docker → use PostgreSQL (db service)
-# If local dev → fallback to SQLite
+# Prefer PostgreSQL when credentials are provided (e.g. Docker/production),
+# otherwise use SQLite for local development and testing.
+DATABASE_URL = guess_database_url()
 
-if os.getenv('POSTGRES_DB'):
-    
-   # 🗄️ DATABASE
+if not USE_SQLITE and DATABASE_URL:
     DATABASES = {
-    "default": dj_database_url.config(
-        default=os.getenv("DATABASE_URL"),
-        conn_max_age=600,  # bağlantı reuse için
-        ssl_require=True    # Render/Neon için güvenli bağlantı
-    )
-}
+        "default": dj_database_url.config(
+            default=DATABASE_URL,
+            conn_max_age=600,  # keep the connection pool warm
+            ssl_require=os.getenv("DATABASE_SSL_REQUIRE", "True").lower() == "true",
+        )
+    }
 else:
     DATABASES = {
         'default': {
@@ -163,8 +221,19 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-INSTALLED_APPS += ['corsheaders']
+# Optional integrations
+try:
+    import corsheaders  # noqa: F401
+except ImportError:
+    CORS_ALLOW_ALL_ORIGINS = False
+else:
+    INSTALLED_APPS.append('corsheaders')
+    MIDDLEWARE.insert(1, 'corsheaders.middleware.CorsMiddleware')
+    CORS_ALLOW_ALL_ORIGINS = True
 
-MIDDLEWARE.insert(1, 'corsheaders.middleware.CorsMiddleware')
-
-CORS_ALLOW_ALL_ORIGINS = True
+try:
+    import django_extensions  # noqa: F401
+except ImportError:
+    pass
+else:
+    INSTALLED_APPS.append('django_extensions')
