@@ -20,16 +20,14 @@ jobs:
 
       - name: Debug — show directory contents
         run: |
-          echo "Repository root:"
+          echo "Current directory:"
           pwd
-          ls -la
           echo ""
-          echo "Backend folder:"
-          ls -la backend/
+          echo "Files:"
+          ls -la
 
       - name: Install dependencies
         run: |
-          cd backend
           python -m venv venv
           source venv/bin/activate
           pip install --upgrade pip
@@ -37,7 +35,6 @@ jobs:
 
       - name: Run Django tests
         run: |
-          cd backend
           source venv/bin/activate
           python manage.py test
 
