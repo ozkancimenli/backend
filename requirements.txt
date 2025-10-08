@@ -1,73 +1,34 @@
-archspec @ file:///home/conda/feedstock_root/build_artifacts/archspec_1737352602016/work
-asgiref==3.10.0
-backports-datetime-fromisoformat==2.0.3
-beautifulsoup4==4.14.2
-blinker==1.9.0
-boltons @ file:///home/conda/feedstock_root/build_artifacts/boltons_1733827268945/work
-Brotli @ file:///Users/runner/miniforge3/conda-bld/brotli-split_1725267563793/work
-certifi @ file:///home/conda/feedstock_root/build_artifacts/certifi_1746569525376/work/certifi
-cffi @ file:///Users/runner/miniforge3/conda-bld/cffi_1725560622100/work
-charset-normalizer @ file:///home/conda/feedstock_root/build_artifacts/charset-normalizer_1746214863626/work
-click==8.1.8
-colorama @ file:///home/conda/feedstock_root/build_artifacts/colorama_1733218098505/work
-conda @ file:///Users/runner/miniforge3/conda-bld/conda_1744220120049/work/conda-src
-conda-libmamba-solver @ file:///home/conda/feedstock_root/build_artifacts/conda-libmamba-solver_1745834476052/work/src
-conda-package-handling @ file:///home/conda/feedstock_root/build_artifacts/conda-package-handling_1736345463896/work
-conda_package_streaming @ file:///home/conda/feedstock_root/build_artifacts/conda-package-streaming_1741620732069/work
-distro @ file:///home/conda/feedstock_root/build_artifacts/distro_1734729835256/work
+# Django Core
 Django==4.2.25
+asgiref==3.10.0
+sqlparse==0.5.3
+pytz==2025.2
+
+# Django Extensions
 django-cors-headers==4.9.0
 django-extensions==3.2.3
+
+# Django REST Framework
 djangorestframework==3.16.1
-djangorestframework_simplejwt==5.5.1
+djangorestframework-simplejwt==5.5.1
+
+# API Documentation
 drf-yasg==1.21.11
-exceptiongroup==1.3.0
-Flask==3.1.2
-flask-marshmallow==1.3.0
-Flask-SQLAlchemy==3.1.1
-frozendict @ file:///Users/runner/miniforge3/conda-bld/frozendict_1728841376066/work
-gunicorn==23.0.0
-h2 @ file:///home/conda/feedstock_root/build_artifacts/h2_1738578511449/work
-hpack @ file:///home/conda/feedstock_root/build_artifacts/hpack_1737618293087/work
-hyperframe @ file:///home/conda/feedstock_root/build_artifacts/hyperframe_1737618333194/work
-idna @ file:///home/conda/feedstock_root/build_artifacts/idna_1733211830134/work
-importlib_metadata==8.7.0
+uritemplate==4.2.0
 inflection==0.5.1
-iniconfig==2.1.0
-itsdangerous==2.2.0
-Jinja2==3.1.6
-jsonpatch @ file:///home/conda/feedstock_root/build_artifacts/jsonpatch_1733814567314/work
-jsonpointer @ file:///Users/runner/miniforge3/conda-bld/jsonpointer_1725302889598/work
-libmambapy @ file:///Users/runner/miniforge3/conda-bld/mamba-split_1746516032751/work/libmambapy
-MarkupSafe==3.0.2
-marshmallow==4.0.1
-marshmallow-sqlalchemy==1.4.2
-menuinst @ file:///Users/runner/miniforge3/conda-bld/menuinst_1731147019402/work
-mysql-connector-python==9.4.0
-packaging @ file:///home/conda/feedstock_root/build_artifacts/bld/rattler-build_packaging_1745345660/work
-platformdirs @ file:///home/conda/feedstock_root/build_artifacts/bld/rattler-build_platformdirs_1746710438/work
-pluggy @ file:///home/conda/feedstock_root/build_artifacts/pluggy_1747339660894/work
+
+# Database
 psycopg2-binary==2.9.10
-pycosat @ file:///Users/runner/miniforge3/conda-bld/pycosat_1732588445684/work
-pycparser @ file:///home/conda/feedstock_root/build_artifacts/bld/rattler-build_pycparser_1733195786/work
-Pygments==2.19.2
+
+# JWT
 PyJWT==2.10.1
-PySocks @ file:///home/conda/feedstock_root/build_artifacts/pysocks_1733217236728/work
+
+# Production Server
+gunicorn==23.0.0
+
+# Testing
 pytest==8.4.2
 pytest-django==4.11.1
-pytz==2025.2
-PyYAML==6.0.3
-requests @ file:///home/conda/feedstock_root/build_artifacts/requests_1733217035951/work
-ruamel.yaml @ file:///Users/runner/miniforge3/conda-bld/ruamel.yaml_1748261693566/work
-ruamel.yaml.clib @ file:///Users/runner/miniforge3/conda-bld/ruamel.yaml.clib_1728724493881/work
-soupsieve==2.8
-SQLAlchemy==2.0.43
-sqlparse==0.5.3
-tomli==2.2.1
-tqdm @ file:///home/conda/feedstock_root/build_artifacts/tqdm_1735661334605/work
-typing_extensions==4.15.0
-uritemplate==4.2.0
-urllib3 @ file:///home/conda/feedstock_root/build_artifacts/urllib3_1744323578849/work
-Werkzeug==3.1.3
-zipp==3.23.0
-zstandard==0.23.0
+
+# Utilities
+packaging==24.0
