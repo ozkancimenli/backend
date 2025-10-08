@@ -10,11 +10,14 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./  # 👈 repo kökü (requirements.txt burada)
+        working-directory: /home/runner/work/backend/  # 👈 Zorla köke git
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
+      - name: Debug current path (göster bakalım neredeyiz)
+        run: pwd && ls -la
 
       - name: Set up Python
         uses: actions/setup-python@v5
