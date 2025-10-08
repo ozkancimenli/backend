@@ -9,9 +9,26 @@ jobs:
   test-and-deploy:
     runs-on: ubuntu-latest
 
+    env:
+      SECRET_KEY: "test-secret-key-for-ci-cd-only-not-for-production"
+      DEBUG: "False"
+      DATABASE_URL: "sqlite:///db.sqlite3"
+      ALLOWED_HOSTS: "localhost,127.0.0.1"
+      CORS_ALLOWED_ORIGINS: "http://localhost:3000,http://127.0.0.1:3000"
+      CORS_ALLOW_CREDENTIALS: "True"
+      DJANGO_SETTINGS_MODULE: "backend.settings"
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
+      - name: Create .env file
+        run: |
+          echo "SECRET_KEY=test-secret-key-for-ci-cd-only" >> .env
+          echo "DEBUG=False" >> .env
+          echo "DATABASE_URL=sqlite:///db.sqlite3" >> .env
+          echo "ALLOWED_HOSTS=localhost,127.0.0.1" >> .env
+          echo "CORS_ALLOWED_ORIGINS=http://localhost:3000" >> .env
 
       - name: Set up Python
         uses: actions/setup-python@v5
